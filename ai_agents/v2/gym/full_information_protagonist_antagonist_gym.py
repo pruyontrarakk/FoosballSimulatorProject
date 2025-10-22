@@ -6,6 +6,8 @@ import numpy as np
 import mujoco
 import os
 import glfw
+from pathlib import Path
+
 
 from ai_agents.v2.gym.mujoco_table_render_mixin import MujocoTableRenderMixin
 
@@ -21,17 +23,26 @@ SIM_PATH = os.environ.get(
 SIM_PATH = os.path.abspath(SIM_PATH)
 RODS = ["_goal_", "_def_", "_mid_", "_attack_"]
 
-class FoosballEnv( MujocoTableRenderMixin, gym.Env, ):
-    metadata = {'render.modes': ['human', 'rgb_array']}
 
-    def __init__(self, antagonist_model=None, play_until_goal=False, verbose_mode=False):
-        super(FoosballEnv, self).__init__()
+class FoosballEnv(gym.Env):
+    def __init__(self, antagonist_model=None, xml_path=None,play_until_goal: bool = False,         verbose_mode: bool = False,
+        
+        max_steps: int = 1000,
+        seed: int = 0,
+        **kwargs,):
+        if xml_path is None:
+            repo_root = Path(__file__).resolve().parents[3]   # .../FoosballSimulatorProject
+            xml_path = repo_root / "foosball_sim" / "v2" / "foosball_sim.xml"
 
-        dir_path = os.path.dirname(os.path.realpath(__file__))
-        xml_file = SIM_PATH
+        xml_path = Path(xml_path).resolve()
+        if not xml_path.exists():
+            raise FileNotFoundError(f"MuJoCo XML not found: {xml_path}")
 
-        self.model = mujoco.MjModel.from_xml_path(xml_file)
-        self.data = mujoco.MjData(self.model)
+        # 2) Ensure relative assets referenced in the XML are found
+        os.chdir(xml_path.parent)
+
+        self.model = mujoco.MjModel.from_xml_path(str(xml_path))
+        self.data  = mujoco.MjData(self.model)
 
         self.simulation_time = 0
 

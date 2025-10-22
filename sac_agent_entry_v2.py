@@ -5,15 +5,21 @@ from ai_agents.common.train.impl.sac_agent import SACFoosballAgent
 import sys
 import argparse
 from stable_baselines3.common.monitor import Monitor
+from pathlib import Path
+from ai_agents.v2.gym.full_information_protagonist_antagonist_gym import FoosballEnv
+
+REPO_ROOT = Path(__file__).resolve().parent
+XML_PATH = REPO_ROOT / "foosball_sim" / "v2" / "foosball_sim.xml"
+
 
 from ai_agents.common.train.impl.single_player_training_engine import SinglePlayerTrainingEngine
 from ai_agents.v2.gym.full_information_protagonist_antagonist_gym import FoosballEnv
 
 
-def sac_foosball_env_factory(x=None):
-    env = FoosballEnv(antagonist_model=None)
-    env = Monitor(env)
-    return env
+def sac_foosball_env_factory():
+    assert XML_PATH.exists(), f"Missing XML at {XML_PATH}"
+    return FoosballEnv(antagonist_model=None, xml_path=str(XML_PATH))
+
 
 if __name__ == '__main__':
     argparse = argparse.ArgumentParser(description='Train or test model.')

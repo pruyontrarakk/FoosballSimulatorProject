@@ -3,10 +3,11 @@ from ai_agents.common.train.interface.foosball_agent import FoosballAgent
 from stable_baselines3.common.callbacks import EvalCallback
 
 
+
 class SACFoosballAgent(FoosballAgent):
     def __init__(self, id:int, env=None, log_dir='./logs', model_dir='./models', policy_kwargs = dict(net_arch=[3000, 3000, 3000, 3000, 3000, 3000, 3000])):
         self.env = env
-        self.model = None
+        self.model = "auto"
         self.id = id
         self.log_dir = log_dir
         self.model_dir = model_dir
@@ -35,14 +36,14 @@ class SACFoosballAgent(FoosballAgent):
             self.model = SAC('MlpPolicy', self.env, policy_kwargs=self.policy_kwargs, buffer_size=1000000)
         callback = self.create_callback(self.env)
         tb_log_name = f'sac_{self.id}'
-        self.model.learn(total_timesteps=total_timesteps, callback=callback, tb_log_name=tb_log_name)
+        self.model.learn(total_timesteps=total_timesteps, callback=callback, tb_log_name=tb_log_name,progress_bar=True)
 
     def create_callback(self, env):
         eval_callback = EvalCallback(
             env,
             best_model_save_path=self.id_subdir + '/sac/best_model',
             log_path=self.log_dir,
-            eval_freq=3000,
+            eval_freq=10_000,
             n_eval_episodes=10,
             render=False,
             deterministic=True,
