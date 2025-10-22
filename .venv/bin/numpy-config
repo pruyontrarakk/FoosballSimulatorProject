@@ -1,4 +1,4 @@
-#!/Users/kaikaizhang/Documents/25fall/robotics/project/Foosball_CU/.venv/bin/python
+#!/Users/pruyontrarak/FoosballSimulatorProject/.venv/bin/python
 import sys
 from numpy._configtool import main
 if __name__ == '__main__':

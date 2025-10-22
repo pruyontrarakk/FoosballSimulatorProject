@@ -1,4 +1,4 @@
-#!/Users/kaikaizhang/Documents/25fall/robotics/project/Foosball_CU/.venv/bin/python
+#!/Users/pruyontrarak/FoosballSimulatorProject/.venv/bin/python
 import sys
 from numpy.f2py.f2py2e import main
 if __name__ == '__main__':

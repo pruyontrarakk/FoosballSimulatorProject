@@ -1,4 +1,4 @@
-#!/Users/kaikaizhang/Documents/25fall/robotics/project/Foosball_CU/.venv/bin/python
+#!/Users/pruyontrarak/FoosballSimulatorProject/.venv/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys
