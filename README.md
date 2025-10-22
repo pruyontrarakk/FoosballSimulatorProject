@@ -4,14 +4,18 @@
 Design and development of a professional foosball playing AI.
 The directory is organized under 3 teams - Mechanical Assets, Simulation, and AI agents
 
+*** Everything here is written for MacOS
 
-## Setup Python environment
+## Setup Python environment 
 ```
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
+
+## How to run Mujoco
+Mujoco must be downloaded for the foosball environment to open.
 
 ```
 .venv/bin/mjpython - <<'PY'
@@ -26,6 +30,8 @@ with launch_passive(m, d) as v:
         v.sync()
 PY
 ```
+<img width="477" height="298" alt="image" src="https://github.com/user-attachments/assets/a489d607-8103-48c5-86f4-862801a099a3" />
+
 
 
 ## Camera Calibration
@@ -61,18 +67,10 @@ dist (k1 k2 p1 p2 k3) = [0.2875, -0.9437, 0.0116, 0.0049, 0.8478]
 **Notes**
 - Intrinsics are valid **only for this resolution** (3024×4032). Recalibrate if you change resolution or device.
 
-
-### Interpreting quality
-
-- **Mean reprojection error:** ≤ **0.7 px** is good.
-- **Visual check:** `undistorted_preview.jpg` should show straight table rails and checkerboard lines with no bending.
-
 ### Troubleshooting
 
 - **“Could not find corners”**
-  - Some provided images present this error even with the (9,6) included; this is likely due to human error. 
-  - Ensure the entire inner-corner grid is visible (not occluded by rods/walls).
-  - Reduce glare, keep the sheet flat, and use sharp images (no motion blur).
+  - Some provided images present this error even with the (9,6) included; this is likely due to glare, motion blur, occlutions, or non-flat surfaces. 
 
 
 
@@ -92,4 +90,4 @@ dist (k1 k2 p1 p2 k3) = [0.2875, -0.9437, 0.0116, 0.0049, 0.8478]
 
 
 
-.
+
