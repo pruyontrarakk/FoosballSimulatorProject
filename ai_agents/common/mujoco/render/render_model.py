@@ -3,8 +3,13 @@ import os
 import mujoco
 from mujoco import viewer
 import argparse
+SIM_PATH = os.environ.get(
+    'SIM_PATH',
+    os.path.join(os.path.dirname(__file__), '../../../..', 'foosball_sim', 'v2', 'foosball_sim.xml')
+)
+SIM_PATH = os.path.abspath(SIM_PATH)
 
-SIM_PATH = os.environ.get('SIM_PATH', '/Research/Foosball_CU/foosball_sim/v2/foosball_sim.xml')
+# SIM_PATH = os.environ.get('SIM_PATH', '/Foosball_CU/foosball_sim/v2/foosball_sim.xml')
 
 def main():
     arg_parser = argparse.ArgumentParser()

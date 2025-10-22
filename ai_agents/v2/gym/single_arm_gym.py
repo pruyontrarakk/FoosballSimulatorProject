@@ -11,8 +11,12 @@ DIRECTION_CHANGE = 1
 TABLE_MAX_Y_DIM = 70
 BALL_STOPPED_COUNT_THRESHOLD = 20
 MAX_STEPS = 50
-SIM_PATH = os.environ.get('SIM_PATH', '/Research/Foosball_CU/foosball_sim/v2/foosball_sim.xml')
-
+# SIM_PATH = os.environ.get('SIM_PATH', '/Foosball_CU/foosball_sim/v2/foosball_sim.xml')
+SIM_PATH = os.environ.get(
+    'SIM_PATH',
+    os.path.join(os.path.dirname(__file__), '../../../..', 'foosball_sim', 'v2', 'foosball_sim.xml')
+)
+SIM_PATH = os.path.abspath(SIM_PATH)
 RODS = ["_goal_", "_def_", "_mid_", "_attack_"]
 
 class FoosballEnv( MujocoTableRenderMixin, gym.Env, ):
@@ -213,20 +217,21 @@ class FoosballEnv( MujocoTableRenderMixin, gym.Env, ):
         return adjusted_action
 
     def compute_reward(self, protagonist_action):
-        """
-        Compute the reward for the protagonist (Player A).
-        """
-        ball_y = self._get_ball_obs()[0][1]
-        ball_x =
+        # Ball position
+        ball_pos, _ = self._get_ball_obs()
+        ball_x, ball_y, _ = ball_pos     # ← this was the missing line
 
+        # Control penalty (negative)
         ctrl_cost = self.control_cost(protagonist_action)
 
-        victory = 10000 * DIRECTION_CHANGE if ball_y >  TABLE_MAX_Y_DIM else 0  # Ball in antagonist's goal
-        loss = -10000 * DIRECTION_CHANGE if ball_y < -1.0 * TABLE_MAX_Y_DIM else 0  # Ball in protagonist's goal
+        # Sparse scoring
+        victory =  10000 * DIRECTION_CHANGE if ball_y >  TABLE_MAX_Y_DIM else 0
+        loss    = -10000 * DIRECTION_CHANGE if ball_y < -TABLE_MAX_Y_DIM else 0
 
-        reward = loss + victory +  ctrl_cost + ball_y
+        # Small shaping to keep learning signal alive
+        shaping = 0.01 * ball_y
 
-        return reward
+        return loss + victory + ctrl_cost + shaping
 
     @property
     def healthy_reward(self):
