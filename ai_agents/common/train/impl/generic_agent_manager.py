@@ -21,10 +21,19 @@ class GenericAgentManager(AgentManager):
             agent.save()
 
     def initialize_frozen_best_models(self):
+        if self.frozen_best_models:   # <— don’t duplicate per epoch
+            return
         for i in range(self.num_agents):
-            agent = self.agent_class(id=i, env=self.initial_env)
-            agent.initialize_agent()
+            from ai_agents.common.train.impl.sac_agent import SACFoosballAgent
+            agent = SACFoosballAgent(id=i, env=self.initial_env,
+                                    policy_kwargs=dict(net_arch=[256, 256]),
+                                    device='cpu')                 # <— keep on CPU
+            try:
+                agent.load()  # will load onto CPU due to device='cpu'
+            except Exception:
+                print(f"Frozen best {i}: no checkpoint yet; CPU model initialized.")
             self.frozen_best_models.append(agent)
+
 
     def get_training_agents(self):
         return self.training_agents
