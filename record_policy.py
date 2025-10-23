@@ -26,7 +26,6 @@ OUT_FILE = OUT_DIR / "rollout.mp4"
 
 os.environ.setdefault("MUJOCO_GL", "egl")
 
-# New TF32 API only; do NOT call torch.set_float32_matmul_precision
 torch.backends.cuda.matmul.fp32_precision = "high"
 torch.backends.cudnn.conv.fp32_precision = "tf32"
 
@@ -57,7 +56,6 @@ sac_ckpt = _first_existing(SAC_PATHS)
 
 if tqc_ckpt is not None:
     from sb3_contrib import TQC
-    # ✅ load WITH env to avoid VecEnv num_envs mismatch
     policy = TQC.load(tqc_ckpt.as_posix(), env=env, device=device)
     algo_name = "TQC"
 elif sac_ckpt is not None:
